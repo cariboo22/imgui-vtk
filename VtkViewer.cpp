@@ -47,9 +47,11 @@ void VtkViewer::processEvents(){
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.ConfigWindowsMoveFromTitleBarOnly = true; // don't drag window when clicking on image.
 	ImVec2 viewportPos = ImGui::GetCursorStartPos();
+    ImVec2 winPos = ImGui::GetWindowPos();
 
-	double xpos = static_cast<double>(io.MousePos[0]) - static_cast<double>(viewportPos.x);
-	double ypos = static_cast<double>(io.MousePos[1]) - static_cast<double>(viewportPos.y);
+	double xpos = static_cast<double>(io.MousePos[0])  - winPos.x - static_cast<double>(viewportPos.x);
+	double ypos = static_cast<double>(io.MousePos[1])  - winPos.y - static_cast<double>(viewportPos.y);
+
 	int ctrl = static_cast<int>(io.KeyCtrl);
 	int shift = static_cast<int>(io.KeyShift);
 	bool dclick = io.MouseDoubleClicked[0] || io.MouseDoubleClicked[1] || io.MouseDoubleClicked[2];
