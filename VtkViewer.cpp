@@ -1,4 +1,7 @@
 #include "VtkViewer.h"
+#include <imgui.h>
+#include <iterator>
+#include <vtkCommand.h>
 
 // dear imgui: Renderer for VTK(OpenGL back end)
 // - Desktop GL: 2.x 3.x 4.x
@@ -62,6 +65,9 @@ void VtkViewer::processEvents(){
 		if (io.MouseClicked[ImGuiMouseButton_Left]){
 			interactor->InvokeEvent(vtkCommand::LeftButtonPressEvent, nullptr);
 		}
+		else if (io.MouseClicked[ImGuiMouseButton_Middle]){
+			interactor->InvokeEvent(vtkCommand::MiddleButtonPressEvent, nullptr);
+        }
 		else if (io.MouseClicked[ImGuiMouseButton_Right]){
 			interactor->InvokeEvent(vtkCommand::RightButtonPressEvent, nullptr);
 			ImGui::SetWindowFocus(); // make right-clicks bring window into focus
@@ -72,14 +78,51 @@ void VtkViewer::processEvents(){
 		else if (io.MouseWheel < 0){
 			interactor->InvokeEvent(vtkCommand::MouseWheelBackwardEvent, nullptr);
 		}
+
+#ifdef FORWARD_IMGUI_KEYBOARD_TO_VTK
+        for (int imGuiKey = ImGuiKey_NamedKey_BEGIN; imGuiKey < ImGuiKey_NamedKey_END; imGuiKey++){
+
+            if (ImGui::IsKeyPressed(ImGuiKey(imGuiKey))){
+                auto it = imGuiToVtkKey.find(ImGuiKey(imGuiKey));
+
+                if (it != imGuiToVtkKey.end()){
+                    VtkKey key = it->second;
+                    interactor->SetKeyEventInformation(io.KeyCtrl, io.KeyShift, key.keyCode, 0, key.keySym);
+
+                    interactor->KeyPressEvent();
+                    if (key.printable)
+                        interactor->CharEvent();
+                }
+            }
+        }
+#endif
 	}
 
 	if (io.MouseReleased[ImGuiMouseButton_Left]){
 		interactor->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, nullptr);
 	}
+	else if (io.MouseReleased[ImGuiMouseButton_Middle]){
+		interactor->InvokeEvent(vtkCommand::MiddleButtonReleaseEvent, nullptr);
+	}
 	else if (io.MouseReleased[ImGuiMouseButton_Right]){
 		interactor->InvokeEvent(vtkCommand::RightButtonReleaseEvent, nullptr);
 	}
+
+#ifdef FORWARD_IMGUI_KEYBOARD_TO_VTK
+    for (int imGuiKey = ImGuiKey_NamedKey_BEGIN; imGuiKey < ImGuiKey_NamedKey_END; imGuiKey++){
+
+        if (ImGui::IsKeyReleased(ImGuiKey(imGuiKey))){
+            auto it = imGuiToVtkKey.find(ImGuiKey(imGuiKey));
+
+            if (it != imGuiToVtkKey.end()){
+                VtkKey key = it->second;
+                interactor->SetKeyEventInformation(io.KeyCtrl, io.KeyShift, key.keyCode, 0, key.keySym);
+
+                interactor->KeyReleaseEvent();
+            }
+        }
+    }
+#endif
 
 	interactor->InvokeEvent(vtkCommand::MouseMoveEvent, nullptr);
 }
