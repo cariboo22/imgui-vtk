@@ -183,6 +183,8 @@ void VtkViewer::init(){
 	int viewportSize[2] = {static_cast<int>(viewportWidth), static_cast<int>(viewportHeight)};
 
 	renderWindow = vtkSmartPointer<vtkGenericOpenGLRenderWindow>::New();
+    renderWindow->OpenGLInitContext();
+
 	renderWindow->SetSize(viewportSize);
 
 	vtkSmartPointer<vtkCallbackCommand> isCurrentCallback = vtkSmartPointer<vtkCallbackCommand>::New();
