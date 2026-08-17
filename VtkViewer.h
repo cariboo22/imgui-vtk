@@ -152,7 +152,7 @@ public:
 	IMGUI_IMPL_API void removeActor(const vtkSmartPointer<vtkProp>& actor);
 	void setViewportSize(const ImVec2 newSize);
 public:
-	static inline unsigned int NoScrollFlags(){
+	static inline int NoScrollFlags(){
 		return ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
 	}
 public:
