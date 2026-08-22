@@ -24,7 +24,7 @@
 // Alpha value in range [0.0, 1.0] where 1 = opaque
 #define DEFAULT_ALPHA 1
 
-#define FORWARD_IMGUI_KEYBOARD_TO_VTK 1
+// #define FORWARD_IMGUI_KEYBOARD_TO_VTK 1
 
 #ifdef FORWARD_IMGUI_KEYBOARD_TO_VTK
 struct VtkKey {
